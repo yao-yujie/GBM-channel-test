@@ -683,9 +683,9 @@ class GRB:
 		channel1=math.log(11,10)
 		channel2=math.log(63,10)		
 		channel=np.logspace(channel1,channel2,11)
-		print('channellog',channel)
 		channel=np.rint(channel)
 		channel=channel.astype(int)
+		channel=channel[::-1]
 		print(len(channel))
 		print('channel',channel)
 		ch_l=len(channel)
@@ -693,52 +693,48 @@ class GRB:
 		def gaussian(t0,a1,t1,l1):
 			return a1*np.exp(-((t0-t1)**2/(2*l1**2)))
 		f=h5py.File(self.baseresultdir+'/base.h5',mode='r')
-		for i in range(ch_l):			
+		for i in range(ch_l):	
 			if i<ch_l-1:
-				print(i,i)
 				channel=channel
 				cNet=np.array([f['/'+Det[11]+'/ch'+str(ch)][()][2] \
-										for ch in np.arange(channel[i],channel[i+1]+1) ])
-		
+										for ch in np.arange(channel[i+1],channel[i]+1) ])		
 				totalNet=np.sum(cNet,axis=0)
 				totalNet=np.concatenate(([totalNet[0]],totalNet))
-
 				ttefile=glob(self.datadir+'/'+'glg_tte_'+Det[11]+'_'+self.bnname+'_v*.fit')
 				hdu=fits.open(ttefile[0])
 				ebound=hdu['EBOUNDS'].data
 				emin=ebound.field(1)
-				emin=emin[channel[i]:channel[i+1]+1]
+				emin=emin[channel[i+1]:channel[i]+1]
 				emax=ebound.field(2)
-				emax=emax[channel[i]:channel[i+1]+1]
+				emax=emax[channel[i+1]:channel[i]+1]
 				x,y=optimize.curve_fit(gaussian,self.tbins,totalNet)
 				tpeak=x[1]
 				peaktime.append(tpeak)							
-				axes[i].plot(self.tbins,totalNet,linestyle='steps')
-				axes[i].set_xlim(-10,30)
-				axes[i].set_ylim(0,1500)
-				axes[i].set_xlim(0,10)
-				print(i,channel[i],channel[i+1])
-				axes[i].vlines(a,0,1500,'red',linestyle='dashed')
-				axes[i].vlines(b,0,1500,'red',linestyle='dashed')
-				axes[i].vlines(tpeak,0,1500,'green',linestyle='dashed')
-				axes[i].text(20,1000,str(round(emin[0],1))+'-'+str(round(emin[-1],1))+' keV',fontsize=10)		
+				axes[i+1].plot(self.tbins,totalNet,linestyle='steps')
+				axes[i+1].set_xlim(-10,30)
+				axes[i+1].set_ylim(0,1500)
+				axes[i+1].set_xlim(0,10)
+				print(i,channel[i+1],channel[i])
+				axes[i+1].vlines(a,0,1500,'red',linestyle='dashed')
+				axes[i+1].vlines(b,0,1500,'red',linestyle='dashed')
+				axes[i+1].vlines(tpeak,0,1500,'green',linestyle='dashed')
+				axes[i+1].text(20,1000,str(round(emin[0],1))+'-'+str(round(emin[-1],1))+' keV',fontsize=10)
 				
 		else:
-			print(i)
 			cNet=np.array([f['/'+Det[11]+'/ch'+str(ch)][()][2] \
-										for ch in np.arange(channel[0],channel[-1]+1) ])
+										for ch in np.arange(channel[-1],channel[0]+1) ])
 		
 			totalNet=np.sum(cNet,axis=0)
 			totalNet=np.concatenate(([totalNet[0]],totalNet))
 			x,y=optimize.curve_fit(gaussian,self.tbins,totalNet)
 			tpeak=x[1]
-			axes[i].plot(self.tbins,totalNet,linestyle='steps')		
-			axes[i].set_xlim(-10,30)
-			axes[i].set_ylim(0,7000)
-			axes[i].vlines(tpeak,0,7000,'green',linestyle='dashed')
-			axes[i].vlines(a,0,7000,'red',linestyle='dashed')
-			axes[i].vlines(b,0,7000,'red',linestyle='dashed')
-			axes[i].text(20,5000,str(round(14.8,1))+'-'+str(round(emin[-1],1))+' keV',fontsize=10)
+			axes[0].plot(self.tbins,totalNet,linestyle='steps')		
+			axes[0].set_xlim(-10,30)
+			axes[0].set_ylim(0,7000)
+			axes[0].vlines(tpeak,0,7000,'green',linestyle='dashed')
+			axes[0].vlines(a,0,7000,'red',linestyle='dashed')
+			axes[0].vlines(b,0,7000,'red',linestyle='dashed')
+			axes[0].text(20,5000,str(round(15.0,1))+'-'+str(round(150,1))+' keV',fontsize=10)
 		print(peaktime)
 		plt.subplots_adjust(hspace=0)						
 		plt.savefig('ch_netlc.eps')
@@ -782,11 +778,11 @@ for n in range(1,nl):
 	l=len(mask)
 	print(mask)
 	grb=GRB(bnname)
+	grb.rawlc(viewt1=-50,viewt2=300,binwidth=0.07)
+	grb.base(baset1=-50,baset2=200,binwidth=0.07)
 	#grb.timeslice(lcbinwidth=0.05,gamma=1e-300)
 	#z=len(time_slice)
 	#print('time_slice:',time_slice)
-	grb.rawlc(viewt1=-50,viewt2=300,binwidth=0.07)
-	grb.base(baset1=-50,baset2=200,binwidth=0.07)
 
 	#for i in range(z-1):
 	#	grb.phaI(slicet1=time_slice[i],slicet2=time_slice[i+1])        
