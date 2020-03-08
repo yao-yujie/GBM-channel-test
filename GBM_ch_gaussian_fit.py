@@ -737,7 +737,7 @@ class GRB:
 			axes[0].text(20,5000,str(round(15.0,1))+'-'+str(round(150,1))+' keV',fontsize=10)
 		print(peaktime)
 		plt.subplots_adjust(hspace=0)						
-		plt.savefig('ch_netlc.eps')
+		plt.savefig('ch_netlc.png')
 		
 
 	def gaussian_net_rate(self,sigma=3):
@@ -761,7 +761,7 @@ class GRB:
 			plt.plot(t0,y,'r')	
 			plt.xlim(-10,30)
 			plt.ylim(0,300)
-			plt.savefig('gaussian_net_rate.eps')
+			plt.savefig('gaussian_net_rate.png')
 
 for n in range(1,nl):
 	os.chdir('/home/yujie/data/测试能道')    
