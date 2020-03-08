@@ -680,8 +680,8 @@ class GRB:
 
 	def ch_netlc(self,lcbinwidth=0.1):
 		fig, axes= plt.subplots(11,1,figsize=(10, 14),sharex='all',sharey=False)
-		channel1=math.log(11,10)
-		channel2=math.log(63,10)		
+		channel1=math.log(10,10)
+		channel2=math.log(62,10)		
 		channel=np.logspace(channel1,channel2,11)
 		channel=np.rint(channel)
 		channel=channel.astype(int)
@@ -697,16 +697,16 @@ class GRB:
 			if i<ch_l-1:
 				channel=channel
 				cNet=np.array([f['/'+Det[11]+'/ch'+str(ch)][()][2] \
-										for ch in np.arange(channel[i+1],channel[i]+1) ])		
+										for ch in np.arange(channel[i+1]+1,channel[i]+1) ])		
 				totalNet=np.sum(cNet,axis=0)
 				totalNet=np.concatenate(([totalNet[0]],totalNet))
 				ttefile=glob(self.datadir+'/'+'glg_tte_'+Det[11]+'_'+self.bnname+'_v*.fit')
 				hdu=fits.open(ttefile[0])
 				ebound=hdu['EBOUNDS'].data
 				emin=ebound.field(1)
-				emin=emin[channel[i+1]:channel[i]+1]
+				emin=emin[channel[i+1]+1:channel[i]+1]
 				emax=ebound.field(2)
-				emax=emax[channel[i+1]:channel[i]+1]
+				emax=emax[channel[i+1]+1:channel[i]+1]
 				x,y=optimize.curve_fit(gaussian,self.tbins,totalNet)
 				tpeak=x[1]
 				peaktime.append(tpeak)							
@@ -718,11 +718,11 @@ class GRB:
 				axes[i+1].vlines(a,0,1500,'red',linestyle='dashed')
 				axes[i+1].vlines(b,0,1500,'red',linestyle='dashed')
 				axes[i+1].vlines(tpeak,0,1500,'green',linestyle='dashed')
-				axes[i+1].text(20,1000,str(round(emin[0],1))+'-'+str(round(emin[-1],1))+' keV',fontsize=10)
+				axes[i+1].text(20,1000,str(round(emin[0],1))+'-'+str(round(emax[-1],1))+' keV',fontsize=10)
 				
 		else:
 			cNet=np.array([f['/'+Det[11]+'/ch'+str(ch)][()][2] \
-										for ch in np.arange(channel[-1],channel[0]+1) ])
+										for ch in np.arange(channel[-1]+1,channel[0]+1) ])
 		
 			totalNet=np.sum(cNet,axis=0)
 			totalNet=np.concatenate(([totalNet[0]],totalNet))
