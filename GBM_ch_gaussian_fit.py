@@ -713,8 +713,6 @@ class GRB:
 				axes[i+1].plot(self.tbins,totalNet,linestyle='steps')
 				axes[i+1].set_xlim(-10,30)
 				axes[i+1].set_ylim(0,1500)
-				axes[i+1].set_xlim(0,10)
-				print(i,channel[i+1],channel[i])
 				axes[i+1].vlines(a,0,1500,'red',linestyle='dashed')
 				axes[i+1].vlines(b,0,1500,'red',linestyle='dashed')
 				axes[i+1].vlines(tpeak,0,1500,'green',linestyle='dashed')
@@ -737,7 +735,7 @@ class GRB:
 			axes[0].text(20,5000,str(round(15.0,1))+'-'+str(round(150,1))+' keV',fontsize=10)
 		print(peaktime)
 		plt.subplots_adjust(hspace=0)						
-		plt.savefig('ch_netlc.png')
+		plt.savefig('ch_netlc.eps')
 		
 
 	def gaussian_net_rate(self,sigma=3):
@@ -761,7 +759,7 @@ class GRB:
 			plt.plot(t0,y,'r')	
 			plt.xlim(-10,30)
 			plt.ylim(0,300)
-			plt.savefig('gaussian_net_rate.png')
+			plt.savefig('gaussian_net_rate.eps')
 
 for n in range(1,nl):
 	os.chdir('/home/yujie/data/测试能道')    
