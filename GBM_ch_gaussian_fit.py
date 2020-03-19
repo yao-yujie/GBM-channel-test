@@ -709,7 +709,13 @@ class GRB:
 				emax=emax[channel[i+1]+1:channel[i]+1]
 				x,y=optimize.curve_fit(gaussian,self.tbins,totalNet)
 				tpeak=x[1]
-				peaktime.append(tpeak)							
+				peaktime.append(tpeak)
+				a1=x[0]
+				t1=x[1]	
+				l1=x[2]
+				y=gaussian(t0,a1,t1,l1)
+	
+				axes[i+1].plot(t0,y,'r')								
 				axes[i+1].plot(self.tbins,totalNet,linestyle='steps')
 				axes[i+1].set_xlim(-10,30)
 				axes[i+1].set_ylim(0,1500)
@@ -717,7 +723,7 @@ class GRB:
 				axes[i+1].vlines(b,0,1500,'red',linestyle='dashed')
 				axes[i+1].vlines(tpeak,0,1500,'green',linestyle='dashed')
 				axes[i+1].text(20,1000,str(round(emin[0],1))+'-'+str(round(emax[-1],1))+' keV',fontsize=10)
-				
+				axes[i+1].plot(t0,y,'r')
 		else:
 			cNet=np.array([f['/'+Det[11]+'/ch'+str(ch)][()][2] \
 										for ch in np.arange(channel[-1]+1,channel[0]+1) ])
